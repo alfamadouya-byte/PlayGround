@@ -1,0 +1,23 @@
+{
+  "name": "billys-global",
+  "version": "0.1.0",
+  "description": "BILLY'S GLOBAL — commerce Chine → Afrique. « Connecter le monde, livrer l'excellence. »",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test pricing.test.js tests/api.test.js",
+    "test:pricing": "node --test pricing.test.js",
+    "test:api": "node --test tests/api.test.js",
+    "seed": "node scripts/seed.js",
+    "check": "node --check server.js && node --check pricing.js"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.2.0",
+    "firebase-admin": "^12.4.0",
+    "helmet": "^7.1.0"
+  }
+}

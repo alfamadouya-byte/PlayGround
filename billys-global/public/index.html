@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BILLY'S GLOBAL — Chine → Guinée, prix livré en GNF</title>
+<style>
+:root{--orange:#ff6a1a;--navy:#0b1630;--bg:#fff;--muted:#5b6478;--card:#f6f7fb;--radius:14px}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#16213a;background:var(--bg)}
+nav{background:var(--orange);color:#fff;display:flex;gap:.6rem;align-items:center;padding:.7rem 1rem;position:sticky;top:0;z-index:10}
+nav b{font-size:1.05rem}nav .sp{flex:1}nav a,nav button{color:#fff;text-decoration:none;background:rgba(0,0,0,.15);border:0;border-radius:10px;padding:.45rem .7rem;font-size:.9rem;cursor:pointer}
+.hero{background:var(--navy);color:#fff;padding:1.6rem 1rem;text-align:center}
+.hero p{color:#c7d0e4;margin:.4rem 0 1rem}.hero .cta{background:var(--orange);color:#fff;border:0;border-radius:12px;padding:.7rem 1.2rem;font-size:1rem;cursor:pointer}
+.wrap{max-width:960px;margin:0 auto;padding:0 1rem 4rem}
+.card{background:var(--card);border-radius:var(--radius);padding:1rem;margin:1rem 0}
+.tata{border:2px solid var(--orange;background:#fff}.tata .q{display:flex;gap:.5rem;flex-wrap:wrap}
+.tata button{border:1px solid var(--orange);background:#fff;color:var(--orange);border-radius:20px;padding:.4rem .8rem;cursor:pointer}
+.markets{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.6rem}
+.market{background:#fff;border-radius:12px;padding:.7rem;border:1px solid #e5e8f0}
+.filters{display:flex;gap:.5rem;flex-wrap:wrap;margin:.6rem 0}
+.filters input,.filters select{padding:.55rem;border-radius:10px;border:1px solid #ccd2e0;font-size:.95rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.7rem}
+.prod{background:#fff;border:1px solid #e5e8f0;border-radius:12px;padding:.7rem;display:flex;flex-direction:column;gap:.35rem}
+.prod .p{font-weight:700;color:var(--navy)}.prod .est{font-size:.75rem;color:#8a6d00;background:#fff3c4;border-radius:6px;padding:.1rem .4rem;display:inline-block}
+.prod .devis{font-size:.85rem;color:#8a3c00}.prod button{background:var(--navy);color:#fff;border:0;border-radius:10px;padding:.5rem;cursor:pointer}
+#drawer{position:fixed;top:0;right:-340px;width:320px;max-width:92vw;height:100%;background:#fff;box-shadow:-4px 0 20px rgba(0,0,0,.2);transition:right .2s;z-index:20;padding:1rem;overflow:auto}
+#drawer.open{right:0}
+#drawer .line{display:flex;justify-content:space-between;gap:.5rem;font-size:.9rem;margin:.3rem 0}
+form.order input,form.order select{width:100%;padding:.6rem;margin:.3rem 0;border-radius:10px;border:1px solid #ccd2e0}
+.btn{background:var(--orange);color:#fff;border:0;border-radius:12px;padding:.7rem 1rem;font-size:1rem;cursor:pointer;width:100%}
+.muted{color:var(--muted);font-size:.85rem}
+#chatlog{background:#fff;border:1px solid #e5e8f0;border-radius:12px;padding:.6rem;min-height:90px;max-height:220px;overflow:auto;margin:.5rem 0}
+#chatlog div{margin:.3rem 0;font-size:.92rem}
+footer{background:var(--navy);color:#c7d0e4;text-align:center;padding:1.2rem;font-size:.85rem}
+.modes{display:flex;gap:.5rem}.modes label{border:1px solid #ccd2e0;border-radius:10px;padding:.45rem .7rem;cursor:pointer;font-size:.9rem}
+</style>
+</head>
+<body>
+<nav><b>BILLY'S GLOBAL</b><span class="sp"></span><a href="#catalogue">Catalogue</a><a href="#suivi">Suivi</a><button id="cartBtn">Panier (<span id="cartN">0</span>)</button></nav>
+<header class="hero">
+  <h1>De la Chine jusqu'à chez vous.</h1>
+  <p>« Connecter le monde, livrer l'excellence. » — Prix final en francs guinéens, suivi par code, sans parler chinois.</p>
+  <button class="cta" onclick="document.getElementById('catalogue').scrollIntoView()">Voir le catalogue</button>
+</header>
+<div class="wrap">
+
+  <section class="card tata">
+    <b>◉ Tata, votre assistante</b>
+    <p class="muted">Posez une question sur un produit, un prix ou votre commande.</p>
+    <div class="q">
+      <button data-q="Quel est le prix du smartphone ?">Prix du smartphone ?</button>
+      <button data-q="Que vendez-vous ?">Que vendez-vous ?</button>
+      <button data-q="Quels sont les délais de livraison vers Conakry ?">Délais vers Conakry ?</button>
+    </div>
+    <div id="chatlog"><div><i>Tata : Bonjour ! Que cherchez-vous aujourd'hui ?</i></div></div>
+    <div style="display:flex;gap:.5rem"><input id="chatIn" placeholder="Écrivez à Tata…" style="flex:1;padding:.6rem;border-radius:10px;border:1px solid #ccd2e0"><button class="btn" style="width:auto" id="chatSend">Envoyer</button></div>
+  </section>
+
+  <section class="card">
+    <b>Marchés de Chine</b>
+    <p class="muted">Nos zones d'achat : prix d'usine, contrôle qualité avant expédition.</p>
+    <div class="markets">
+      <div class="market"><b>Yiwu</b><br><span class="muted">Petits produits, textile</span></div>
+      <div class="market"><b>Guangzhou</b><br><span class="muted">Mode, maison</span></div>
+      <div class="market"><b>Shenzhen</b><br><span class="muted">Électronique, énergie</span></div>
+    </div>
+  </section>
+
+  <section id="catalogue">
+    <h2>Catalogue <span class="muted" id="demoTag"></span></h2>
+    <div class="modes" role="radiogroup" aria-label="Mode de transport">
+      <label><input type="radio" name="mode" value="air" checked> Avion (rapide)</label>
+      <label><input type="radio" name="mode" value="groupage"> Groupage</label>
+      <label><input type="radio" name="mode" value="sea"> Bateau (éco)</label>
+    </div>
+    <div class="filters">
+      <input id="search" placeholder="Rechercher…">
+      <select id="catSel"><option value="">Toutes catégories</option></select>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="card">
+    <h2>Commander</h2>
+    <form class="order" id="orderForm">
+      <input id="fName" placeholder="Nom complet" required>
+      <input id="fPhone" placeholder="Téléphone (ex. 622 00 00 00)" required>
+      <input id="fAddr" placeholder="Adresse (ex. Conakry, Matoto)" required>
+      <select id="fPay"><option value="manuel">Paiement à la commande (manuel)</option><option value="orange_money">Orange Money (bientôt)</option><option value="mtn_momo">MTN MoMo (bientôt)</option><option value="wave">Wave (bientôt)</option></select>
+      <p class="muted" id="orderTotal">Total : —</p>
+      <button class="btn" type="submit">Valider la commande</button>
+    </form>
+    <p id="orderOk"></p>
+  </section>
+
+  <section class="card" id="suivi">
+    <h2>Suivre ma commande</h2>
+    <div style="display:flex;gap:.5rem"><input id="trackCode" placeholder="Code (ex. BG-2026-000001)" style="flex:1;padding:.6rem;border-radius:10px;border:1px solid #ccd2e0"><button class="btn" style="width:auto" id="trackBtn">Suivre</button></div>
+    <p id="trackOut"></p>
+  </section>
+
+  <section class="card">
+    <h2>Devenir fournisseur</h2>
+    <form class="order" id="vendorForm">
+      <input id="vShop" placeholder="Nom de la boutique" required>
+      <input id="vName" placeholder="Votre nom" required>
+      <input id="vPhone" placeholder="Téléphone" required>
+      <input id="vCity" placeholder="Ville (ex. Conakry)">
+      <input id="vCat" placeholder="Catégories (ex. textile, électronique)">
+      <button class="btn" type="submit">Envoyer ma demande</button>
+    </form>
+    <p id="vendorOk"></p>
+  </section>
+</div>
+
+<aside id="drawer" aria-label="Panier">
+  <h3>Votre panier</h3>
+  <div id="cartLines"></div>
+  <p><b id="cartTotal">Total : —</b></p>
+  <p class="muted">Le prix final est toujours recalculé par notre serveur. Aucun prix inventé.</p>
+  <button class="btn" id="closeDrawer">Continuer mes achats</button>
+</aside>
+
+<footer>BILLY'S GLOBAL — Conakry → Labé → Afrique de l'Ouest · Paiement confirmé avant expédition · <a href="/admin.html" style="color:#ffb37e">Espace DG</a></footer>
+
+<script>
+let PRODUCTS=[], CART=JSON.parse(localStorage.getItem('bg_cart')||'[]');
+const mode=()=>document.querySelector('input[name=mode]:checked').value;
+const gnf=n=>n==null?'Prix sur devis':Number(n).toLocaleString('fr-FR')+' GNF';
+function ev(type,data){fetch('/api/events',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type,data})}).catch(()=>{})}
+
+async function load(){
+  const r=await fetch('/api/products?mode='+mode()).then(r=>r.json());
+  PRODUCTS=r.products;
+  document.getElementById('demoTag').textContent=r.demo?'(données DEMO — estimations)':'(données réelles)';
+  const cats=[...new Set(PRODUCTS.map(p=>p.category))];
+  document.getElementById('catSel').innerHTML='<option value="">Toutes catégories</option>'+cats.map(c=>`<option>${c}</option>`).join('');
+  render(); ev('search',{mode:mode()});
+}
+function render(){
+  const q=document.getElementById('search').value.toLowerCase(), c=document.getElementById('catSel').value;
+  const list=PRODUCTS.filter(p=>(!c||p.category===c)&&p.name.toLowerCase().includes(q));
+  document.getElementById('grid').innerHTML=list.map(p=>`
+    <div class="prod"><b>${p.name}</b><span class="muted">${p.category}</span>
+    <span class="p">${p.priceLabel}</span>
+    ${p.priceState==='ESTIMATION'?'<span class="est">Estimation</span>':''}
+    ${p.priceState==='DEVIS_REQUIS'?'<span class="devis">Prix sur devis</span>':''}
+    ${p.priceState!=='DEVIS_REQUIS'?`<button onclick="add('${p.id}')">Ajouter</button>`:''}
+    </div>`).join('')||'<p class="muted">Aucun produit.</p>';
+}
+async function refreshCart(){
+  document.getElementById('cartN').textContent=CART.reduce((s,l)=>s+l.qty,0);
+  localStorage.setItem('bg_cart',JSON.stringify(CART));
+  if(!CART.length){document.getElementById('cartLines').innerHTML='<p class="muted">Panier vide.</p>';document.getElementById('cartTotal').textContent='Total : —';document.getElementById('orderTotal').textContent='Total : —';return}
+  const r=await fetch('/api/price',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:CART.map(l=>({productId:l.id,qty:l.qty})),mode:mode()})}).then(r=>r.json());
+  const names=Object.fromEntries(PRODUCTS.map(p=>[p.id,p.name]));
+  document.getElementById('cartLines').innerHTML=CART.map((l,i)=>`<div class="line"><span>${names[l.id]||l.id} × ${l.qty}</span><button onclick="rm(${i})">✕</button></div>`).join('')
+    +(r.priceState==='ESTIMATION'?'<p class="muted">Estimation — à confirmer.</p>':'');
+  document.getElementById('cartTotal').textContent='Total : '+gnf(r.finalPrice)+(r.priceState==='ESTIMATION'?' (estimation)':'');
+  document.getElementById('orderTotal').textContent='Total : '+gnf(r.finalPrice);
+  window._cartTotal=r;
+}
+function add(id){const l=CART.find(l=>l.id===id);l?l.qty++:CART.push({id,qty:1});ev('add_to_cart',{productId:id});refreshCart();document.getElementById('drawer').classList.add('open')}
+function rm(i){CART.splice(i,1);refreshCart()}
+document.getElementById('cartBtn').onclick=()=>{refreshCart();document.getElementById('drawer').classList.add('open')};
+document.getElementById('closeDrawer').onclick=()=>document.getElementById('drawer').classList.remove('open');
+document.getElementById('search').oninput=render;
+document.getElementById('catSel').onchange=render;
+document.querySelectorAll('input[name=mode]').forEach(r=>r.onchange=load);
+
+document.getElementById('orderForm').onsubmit=async e=>{
+  e.preventDefault();
+  if(!CART.length){alert('Panier vide.');return}
+  ev('checkout',{count:CART.length});
+  const r=await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    name:fName.value,phone:fPhone.value,address:fAddr.value,payMethod:fPay.value,mode:mode(),
+    items:CART.map(l=>({productId:l.id,qty:l.qty}))})}).then(r=>r.json());
+  if(r.code){document.getElementById('orderOk').innerHTML=`✅ Commande <b>${r.code}</b> — ${gnf(r.total)}. Gardez ce code pour le suivi. Paiement à confirmer.`;CART=[];refreshCart()}
+  else alert(r.error||'Erreur.');
+};
+document.getElementById('trackBtn').onclick=async()=>{
+  const c=trackCode.value.trim().toUpperCase();if(!c)return;
+  const r=await fetch('/api/track/'+encodeURIComponent(c)).then(r=>r.json());
+  trackOut.innerHTML=r.error?('❌ '+r.error):`Colis <b>${r.code}</b> : statut <b>${r.status}</b>, total ${gnf(r.total)}${r.paymentConfirmed?' (paiement confirmé ✅)':' (en attente de paiement)'}.`;
+};
+document.getElementById('vendorForm').onsubmit=async e=>{
+  e.preventDefault();
+  const r=await fetch('/api/vendors',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({shop:vShop.value,name:vName.value,phone:vPhone.value,city:vCity.value,categories:vCat.value})}).then(r=>r.json());
+  vendorOk.textContent=r.message||r.error;
+};
+async function askTata(msg){
+  chatlog.innerHTML+=`<div><b>Vous :</b> ${msg}</div>`;
+  const r=await fetch('/api/tata',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg})}).then(r=>r.json());
+  chatlog.innerHTML+=`<div><b>Tata :</b> ${r.reply||r.error}</div>`;chatlog.scrollTop=1e6;
+}
+document.getElementById('chatSend').onclick=()=>{const v=chatIn.value.trim();if(v){chatIn.value='';askTata(v)}};
+document.querySelectorAll('.tata .q button').forEach(b=>b.onclick=()=>askTata(b.dataset.q));
+load();refreshCart();
+</script>
+</body>
+</html>

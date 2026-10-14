@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BILLY'S GLOBAL — Espace DG</title>
+<style>
+:root{--bg:#0a1226;--card:#131e3a;--orange:#ff6a1a;--txt:#e8edf7;--muted:#93a0bd}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{display:flex;gap:.6rem;align-items:center;padding:.8rem 1rem;background:#0b1630;position:sticky;top:0}
+header b{color:var(--orange)}header .sp{flex:1}header input{background:#1b2748;border:1px solid #2c3c68;color:#fff;border-radius:8px;padding:.45rem}
+header a{color:#ffb37e;font-size:.85rem}
+.wrap{max-width:1100px;margin:0 auto;padding:1rem}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.6rem}
+.tile{background:var(--card);border-radius:12px;padding:.8rem}.tile b{font-size:1.2rem;color:#fff}.tile span{color:var(--muted);font-size:.8rem}
+section{background:var(--card);border-radius:12px;padding:1rem;margin:1rem 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}th,td{text-align:left;padding:.45rem;border-bottom:1px solid #243257}
+button{background:var(--orange);color:#fff;border:0;border-radius:8px;padding:.4rem .7rem;cursor:pointer;margin:.1rem}
+button.ghost{background:#243257}select,input{background:#1b2748;border:1px solid #2c3c68;color:#fff;border-radius:8px;padding:.45rem;margin:.15rem}
+pre{background:#080f22;padding:.7rem;border-radius:8px;overflow:auto;font-size:.8rem}
+.muted{color:var(--muted);font-size:.85rem}
+</style>
+</head>
+<body>
+<header><b>BILLY'S GLOBAL · DG</b><span class="sp"></span><a href="/">← Site client</a><input id="token" type="password" placeholder="Jeton x-admin-token"></header>
+<div class="wrap">
+  <div class="tiles" id="tiles"></div>
+  <section><h3>Moteur de la plateforme (état réel)</h3><pre id="engine">—</pre></section>
+  <section><h3>Commandes par statut</h3><div id="byStatus"></div>
+    <h3>Liste des commandes</h3>
+    <table><thead><tr><th>Code</th><th>Client</th><th>Total</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="orders"></tbody></table>
+  </section>
+  <section><h3>Demandes de boutiques</h3><table><thead><tr><th>Boutique</th><th>Contact</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="vendors"></tbody></table></section>
+  <section><h3>Ajout / modification de produit</h3>
+    <input id="pId" placeholder="id (vide = nouveau)"><input id="pName" placeholder="Nom"><input id="pCat" placeholder="Catégorie">
+    <input id="pPrice" type="number" placeholder="Prix fournisseur"><select id="pCur"><option>USD</option><option>CNY</option><option>GNF</option></select>
+    <input id="pWeight" type="number" step="0.01" placeholder="Poids kg (vide = estimation)">
+    <select id="pSource"><option value="SUPPLIER_QUOTE">SUPPLIER_QUOTE (prix réel)</option><option value="ESTIMATION">ESTIMATION</option></select>
+    <button onclick="saveProduct()">Enregistrer</button> <span class="muted">Vrais prix fournisseurs ici (P3). Horodatage automatique.</span>
+  </section>
+  <section><h3>Analytics des événements</h3><pre id="analytics">—</pre></section>
+</div>
+<script>
+const H=()=>({'Content-Type':'application/json','x-admin-token':document.getElementById('token').value});
+document.getElementById('token').value=localStorage.getItem('bg_admin')||'';
+document.getElementById('token').onchange=e=>localStorage.setItem('bg_admin',e.target.value);
+const gnf=n=>n==null?'Prix sur devis':Number(n).toLocaleString('fr-FR')+' GNF';
+async function load(){
+  if(!document.getElementById('token').value){document.getElementById('engine').textContent='Entrez le jeton x-admin-token.';return}
+  const d=await fetch('/api/admin/dashboard',{headers:H()}).then(r=>r.json());
+  if(d.error){document.getElementById('engine').textContent='Erreur : '+d.error;return}
+  document.getElementById('tiles').innerHTML=`
+    <div class="tile"><b>${gnf(d.revenue)}</b><br><span>Chiffre d'affaires</span></div>
+    <div class="tile"><b>${d.orders}</b><br><span>Commandes</span></div>
+    <div class="tile"><b>${gnf(d.margin)}</b><br><span>Marge BG</span></div>
+    <div class="tile"><b>${d.paid}</b><br><span>Payées</span></div>`;
+  document.getElementById('byStatus').innerHTML=Object.entries(d.byStatus||{}).map(([s,n])=>`<button class="ghost">${s} : ${n}</button>`).join('')||'<span class="muted">Aucune commande.</span>';
+  const o=await fetch('/api/admin/orders',{headers:H()}).then(r=>r.json());
+  document.getElementById('orders').innerHTML=(o.orders||[]).map(x=>`<tr><td>${x.code}</td><td>${x.customer?.name}<br><span class="muted">${x.customer?.phone}</span></td><td>${gnf(x.total)}<br><span class="muted">${x.priceState}</span></td><td>${x.status}${x.payment?.confirmed?' ✅':''}</td>
+    <td>${x.status==='PENDING_PAYMENT'?`<button onclick="confirmPay('${x.code}')">Confirmer paiement</button>`:''}<button class="ghost" onclick="nextStatus('${x.code}','${x.status}')">Statut +</button></td></tr>`).join('');
+  const e=await fetch('/api/admin/engine',{headers:H()}).then(r=>r.json());
+  document.getElementById('engine').textContent=JSON.stringify(e,null,2);
+  const v=await fetch('/api/admin/vendors',{headers:H()}).then(r=>r.json());
+  document.getElementById('vendors').innerHTML=(v.vendors||[]).map(x=>`<tr><td>${x.shop}<br><span class="muted">${x.city} · ${x.categories}</span></td><td>${x.name}<br><span class="muted">${x.phone}</span></td><td>${x.status}</td>
+    <td>${x.status==='PENDING'?`<button onclick="reviewVendor('${x.id}','APPROVED')">Approuver</button><button class="ghost" onclick="reviewVendor('${x.id}','REJECTED')">Refuser</button>`:''}</td></tr>`).join('')||'<tr><td colspan=4 class="muted">Aucune demande.</td></tr>';
+  const a=await fetch('/api/admin/analytics',{headers:H()}).then(r=>r.json());
+  document.getElementById('analytics').textContent=JSON.stringify(a,null,2);
+}
+const FLOW=['PENDING_PAYMENT','PAID','SOURCING','SUPPLIER_CONFIRMED','QUALITY_CONTROL','READY_TO_SHIP','IN_TRANSIT','ARRIVED','CUSTOMS','CLEARANCE','LOCAL_DELIVERY','DELIVERED'];
+async function confirmPay(code){await fetch(`/api/admin/orders/${code}/confirm-payment`,{method:'POST',headers:H(),body:JSON.stringify({reference:'manuel-DG'})});load()}
+async function nextStatus(code,cur){const n=FLOW[FLOW.indexOf(cur)+1];if(!n)return;const r=await fetch(`/api/admin/orders/${code}/status`,{method:'PATCH',headers:H(),body:JSON.stringify({status:n})}).then(r=>r.json());if(r.error)alert(r.error);load()}
+async function reviewVendor(id,status){await fetch(`/api/admin/vendors/${id}`,{method:'PATCH',headers:H(),body:JSON.stringify({status})});load()}
+async function saveProduct(){
+  const body={name:pName.value,category:pCat.value,supplierPrice:pPrice.value===''?null:Number(pPrice.value),currency:pCur.value,weightKg:pWeight.value===''?null:Number(pWeight.value),source:pSource.value};
+  if(pId.value)body.id=pId.value;
+  const r=await fetch('/api/admin/products',{method:'POST',headers:H(),body:JSON.stringify(body)}).then(r=>r.json());
+  alert(r.id?('Produit enregistré : '+r.id):(r.error||'Erreur'));load();
+}
+load();setInterval(load,15000);
+</script>
+</body>
+</html>

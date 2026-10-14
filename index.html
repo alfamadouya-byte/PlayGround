@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BILLY'S GLOBAL — Chine → Guinée | P1 : audit et socle vérifié</title>
+<style>
+:root{--orange:#ff6a1a;--navy:#0b1630;--card:#f6f7fb}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#16213a}
+nav{background:var(--orange);color:#fff;display:flex;gap:.6rem;align-items:center;padding:.7rem 1rem;position:sticky;top:0}
+nav b{font-size:1.05rem}nav .sp{flex:1}nav a{color:#fff;text-decoration:none;background:rgba(0,0,0,.15);border-radius:10px;padding:.45rem .7rem;font-size:.9rem}
+.hero{background:var(--navy);color:#fff;padding:2rem 1rem;text-align:center}
+.hero p{color:#c7d0e4}.hero .cta{background:var(--orange);color:#fff;border:0;border-radius:12px;padding:.7rem 1.2rem;font-size:1rem;cursor:pointer}
+.wrap{max-width:960px;margin:0 auto;padding:0 1rem 4rem}
+.card{background:var(--card);border-radius:14px;padding:1rem;margin:1rem 0}
+.demo{border:2px dashed var(--orange);background:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.7rem}
+.prod{background:#fff;border:1px solid #e5e8f0;border-radius:12px;padding:.7rem}
+.prod .p{font-weight:700;color:var(--navy)}
+.muted{color:#5b6478;font-size:.85rem}
+table{width:100%;border-collapse:collapse;font-size:.88rem}th,td{text-align:left;padding:.4rem;border-bottom:1px solid #e0e4ee}
+.ok{color:#0a7a2f;font-weight:700}
+footer{background:var(--navy);color:#c7d0e4;text-align:center;padding:1.2rem;font-size:.85rem}
+input{padding:.6rem;border-radius:10px;border:1px solid #ccd2e0}
+button.btn{background:var(--orange);color:#fff;border:0;border-radius:12px;padding:.65rem 1rem;cursor:pointer}
+code{background:#eef1f7;border-radius:6px;padding:.1rem .35rem}
+</style>
+</head>
+<body>
+<nav><b>BILLY'S GLOBAL</b><span class="sp"></span><a href="#catalogue">Catalogue</a><a href="#p1">Rapport P1</a><a href="#suivi">Suivi</a></nav>
+<header class="hero">
+  <h1>De la Chine jusqu'à chez vous.</h1>
+  <p>« Connecter le monde, livrer l'excellence. » — Conakry, Labé, puis l'Afrique de l'Ouest. Prix final en GNF, suivi par code.</p>
+  <button class="cta" onclick="document.getElementById('catalogue').scrollIntoView()">Voir le catalogue</button>
+</header>
+<div class="wrap">
+
+  <section class="card demo">
+    <b>◉ État de la plateforme (P1 — <span id="apistat">connexion au backend…</span>)</b>
+    <p class="muted" id="apimsg">Je tente de joindre l'API (<code>/api/products</code>). Sans backend, les prix affichent « Prix sur devis » — aucun prix n'est jamais inventé.</p>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+      <input id="apiBase" placeholder="URL backend (ex. https://xxx.onrender.com)" style="flex:1;min-width:220px">
+      <button class="btn" id="apiGo">Connecter</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <b>Marchés de Chine</b>
+    <p class="muted">Yiwu (petits produits, textile) · Guangzhou (mode, maison) · Shenzhen (électronique, énergie). Contrôle qualité avant expédition.</p>
+  </section>
+
+  <section id="catalogue">
+    <h2>Catalogue <span class="muted" id="demoTag"></span></h2>
+    <div class="grid" id="grid"><p class="muted">Chargement…</p></div>
+  </section>
+
+  <section class="card" id="suivi">
+    <h2>Suivre ma commande</h2>
+    <div style="display:flex;gap:.5rem"><input id="trackCode" placeholder="Code (ex. BG-2026-000001)" style="flex:1"><button class="btn" id="trackBtn">Suivre</button></div>
+    <p id="trackOut" class="muted"></p>
+  </section>
+
+  <section class="card" id="p1">
+    <h2>Rapport P1 — audit, tests, preuves</h2>
+    <table>
+      <tr><th>Vérification</th><th>Résultat</th></tr>
+      <tr><td>Moteur de prix, référence 1 000 USD / 2 kg / avion</td><td class="ok">11 978 000 GNF ✔</td></tr>
+      <tr><td><code>node --test</code> (pricing 3 + API 2)</td><td class="ok">5/5 verts ✔</td></tr>
+      <tr><td>Serveur live : health → catalogue → commande</td><td class="ok">BG-2026-000001 ✔</td></tr>
+      <tr><td>Cohérence prix produit = panier = commande = suivi</td><td class="ok">vérifiée en test ✔</td></tr>
+      <tr><td>PAID uniquement via confirmation (statut direct refusé)</td><td class="ok">403 ✔</td></tr>
+      <tr><td>Tata sans information</td><td class="ok">« Je n'ai pas encore cette information. » ✔</td></tr>
+      <tr><td>Firestore réel / déploiement Render</td><td>⏳ En attente : clé <code>FIREBASE_SERVICE_ACCOUNT</code> + mise en ligne (P2)</td></tr>
+    </table>
+    <p class="muted">Code complet : <code>billys-global/</code> (server.js, pricing.js, public/index.html, public/admin.html, tests). Données actuelles : DEMO, estimations marquées. Aucun faux chiffre.</p>
+  </section>
+</div>
+<footer>BILLY'S GLOBAL — « Connecter le monde, livrer l'excellence. » · <span class="muted">P1 : socle vérifié, en attente de vos clés pour P2/P3.</span></footer>
+<script>
+let API='';
+const gnf=n=>n==null?'Prix sur devis':Number(n).toLocaleString('fr-FR')+' GNF';
+const DEMO=[
+ ['Smartphone 6.7" 128 Go','électronique'],['Écouteurs Bluetooth','électronique'],
+ ['Pagne wax (6 yards)','textile'],['Robe d’été','textile'],
+ ['Chaussures running','mode'],['Sac à main cuir PU','mode'],
+ ['Mixeur électrique','maison'],['Set casseroles 10 pièces','maison'],
+ ['Panneau solaire 550 W','énergie'],['Groupe électrogène 3 kW','énergie'],
+ ['Perceuse sans fil 20 V','outillage'],['Moto 125 cm³ (neuve)','moto']];
+async function load(){
+  try{
+    const r=await fetch(API+'/api/products?mode=air').then(r=>{if(!r.ok)throw 0;return r.json()});
+    document.getElementById('apistat').textContent='backend connecté ✅';
+    document.getElementById('apimsg').textContent=r.demo?'Backend en mode DEMO (mémoire, sans Firestore).':'Backend connecté aux données réelles.';
+    document.getElementById('demoTag').textContent=r.demo?'(données DEMO — estimations)':'(données réelles)';
+    document.getElementById('grid').innerHTML=r.products.map(p=>`<div class="prod"><b>${p.name}</b><br><span class="muted">${p.category}</span><br><span class="p">${p.priceLabel}</span><br>${p.priceState==='ESTIMATION'?'<span class="muted">Estimation</span>':''}${p.priceState==='DEVIS_REQUIS'?'<span class="muted">Prix sur devis</span>':''}</div>`).join('');
+  }catch{
+    document.getElementById('apistat').textContent='backend non connecté';
+    document.getElementById('demoTag').textContent='(vitrine hors-ligne — prix sur devis)';
+    document.getElementById('grid').innerHTML=DEMO.map(([n,c])=>`<div class="prod"><b>${n}</b><br><span class="muted">${c}</span><br><span class="p">Prix sur devis</span><br><span class="muted">Backend non connecté — aucun prix inventé.</span></div>`).join('');
+  }
+}
+document.getElementById('apiGo').onclick=()=>{API=document.getElementById('apiBase').value.trim().replace(/\/$/,'');load()};
+document.getElementById('trackBtn').onclick=async()=>{
+  const c=document.getElementById('trackCode').value.trim().toUpperCase();if(!c||!API){document.getElementById('trackOut').textContent=!API?'Connectez d’abord le backend ci-dessus.':'';return}
+  const r=await fetch(API+'/api/track/'+encodeURIComponent(c)).then(r=>r.json());
+  document.getElementById('trackOut').textContent=r.error?('❌ '+r.error):`Colis ${r.code} : ${r.status}, ${gnf(r.total)}${r.paymentConfirmed?' (paiement confirmé ✅)':''}.`;
+};
+load();
+</script>
+</body>
+</html>
